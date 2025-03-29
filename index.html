@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Mystery Puzzles</title>
+    <style>
+      /* Greyish, modern theme */
+      body {
+        background: #e0e0e0;
+        color: #333;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        margin: 0;
+        padding: 20px;
+        text-align: center;
+      }
+      h1,
+      h2 {
+        font-weight: 300;
+      }
+      section {
+        background: #fff;
+        margin: 20px auto;
+        padding: 20px;
+        max-width: 600px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+      }
+      /* Puzzle 1 (Drag & Drop) */
+      #draggable {
+        background: #ccc;
+        padding: 10px 20px;
+        width: fit-content;
+        margin: 10px auto;
+        cursor: move;
+        border-radius: 4px;
+      }
+      #dropzone {
+        background: #ddd;
+        padding: 40px;
+        margin: 10px auto;
+        width: 80%;
+        border: 2px dashed #bbb;
+        border-radius: 4px;
+      }
+      /* Puzzle 3 (Hidden Element) */
+      #hiddenButton {
+        opacity: 0;
+        position: absolute;
+        left: 80%;
+        top: 50%;
+        transition: opacity 0.3s;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Welcome to the Mystery Website</h1>
+
+    <section id="puzzle1">
+      <h2>Puzzle 1: Drag and Drop</h2>
+      <p>Drag the box into the drop zone.</p>
+      <div id="draggable" draggable="true">Drag me</div>
+      <div id="dropzone">Drop here</div>
+    </section>
+
+    <section id="puzzle2">
+      <h2>Puzzle 2: Riddle</h2>
+      <p>What has keys but can't open locks?</p>
+      <input type="text" id="riddleAnswer" placeholder="Your answer here" />
+      <button onclick="checkRiddle()">Submit</button>
+      <p id="riddleResult"></p>
+    </section>
+
+    <section id="puzzle3">
+      <h2>Puzzle 3: Hidden Click</h2>
+      <p>Find the hidden element on the page.</p>
+      <button id="hiddenButton" onclick="solveHidden()">?</button>
+    </section>
+
+    <script>
+      let puzzle1Solved = false;
+      let puzzle2Solved = false;
+      let puzzle3Solved = false;
+
+      // Puzzle 1: Drag & Drop
+      const draggable = document.getElementById("draggable");
+      const dropzone = document.getElementById("dropzone");
+
+      draggable.addEventListener("dragstart", (event) => {
+        event.dataTransfer.setData("text/plain", event.target.id);
+      });
+
+      dropzone.addEventListener("dragover", (event) => {
+        event.preventDefault();
+      });
+
+      dropzone.addEventListener("drop", (event) => {
+        event.preventDefault();
+        const data = event.dataTransfer.getData("text/plain");
+        if (data === "draggable") {
+          puzzle1Solved = true;
+          draggable.style.display = "none";
+          dropzone.innerHTML = "<strong>Puzzle 1 solved!</strong>";
+          checkAllPuzzles();
+        }
+      });
+
+      // Puzzle 2: Riddle
+      function checkRiddle() {
+        const answer = document
+          .getElementById("riddleAnswer")
+          .value.trim()
+          .toLowerCase();
+        // The expected answer is "piano"
+        if (answer === "piano") {
+          puzzle2Solved = true;
+          document.getElementById("riddleResult").innerText = "Correct!";
+          checkAllPuzzles();
+        } else {
+          document.getElementById("riddleResult").innerText = "Try again.";
+        }
+      }
+
+      // Puzzle 3: Hidden Click
+      // Reveal the hidden button when the user clicks anywhere in the puzzle3 section
+      const puzzle3Section = document.getElementById("puzzle3");
+      puzzle3Section.addEventListener("click", (event) => {
+        // Only reveal if not yet solved and if the target isn't already the button
+        if (!puzzle3Solved && event.target.id !== "hiddenButton") {
+          document.getElementById("hiddenButton").style.opacity = 1;
+        }
+      });
+
+      function solveHidden() {
+        puzzle3Solved = true;
+        document.getElementById("hiddenButton").innerText = "Found!";
+        checkAllPuzzles();
+      }
+
+      // Check if all puzzles are solved, then redirect to success page
+      function checkAllPuzzles() {
+        if (puzzle1Solved && puzzle2Solved && puzzle3Solved) {
+          // Redirect to success page (create success.html with "SSSS" content)
+          window.location.href = "success.html";
+        }
+      }
+    </script>
+  </body>
+</html>
